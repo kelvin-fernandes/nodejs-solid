@@ -46,7 +46,12 @@ class UsersRepository implements IUsersRepository {
   }
 
   turnAdmin(receivedUser: User): User {
-    return null;
+    const updatedUser = receivedUser;
+
+    updatedUser.admin = true;
+    updatedUser.updated_at = new Date();
+
+    return updatedUser;
   }
 
   list(): User[] {
