@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SOLID API Documentation",
+    "description": "It's an API for SOLID concepts learning!",
+    "version": "1.0.0",
+    "contact": {
+      "email": "sokelvinfernandes@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "Localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "users",
+      "description": "Everything about your Users"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Create a user",
+        "description": "Create a new user.",
+        "operationId": "addUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User with email informed already exists!"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "List All Users",
+        "description": "List all the users in the database.",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseUser"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User is not allowed to get access!"
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "header",
+            "description": "ID of user to use",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "style": "simple"
+          }
+        ]
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get User by Id",
+        "description": "Get user by id from the database.",
+        "operationId": "getUserById",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseUser"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User doesn't exists!"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/UserIdInPath"
+        }
+      ]
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Switch User to Admin",
+        "description": "Switch user to admin in the database.",
+        "operationId": "switchUserToAdmin",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUser"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User doesn't exists!"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/UserIdInPath"
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "RequestUser": {
+        "type": "object",
+        "required": [
+          "name",
+          "email"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "ResponseUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "admin": {
+            "type": "boolean",
+            "default": false
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "UserIdInPath": {
+        "name": "user_id",
+        "in": "path",
+        "description": "ID of user to use",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "style": "simple"
+      }
+    }
+  }
+}
